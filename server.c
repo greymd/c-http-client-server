@@ -45,7 +45,8 @@ int main() {
   printf("Server listening on port 8000...\n");
 
   while (1) {
-    // Accept
+    // 受信待ち
+    printf("accepting...\n");
     addr_len = sizeof(client_addr);
     client_fd = accept(server_fd, (struct sockaddr *)&client_addr, &addr_len);
     if (client_fd == -1) {
@@ -53,19 +54,24 @@ int main() {
       continue;
     }
 
-    // HTTP リクエストを受信
+    // 受信した内容を buffer に格納
+    printf("memset\n");
     memset(buffer, 0, sizeof(buffer));
     read(client_fd, buffer, sizeof(buffer) - 1);
+    printf("Received: %s", buffer);
 
     // HTTP レスポンスを送信
+    printf("Reply response\n");
     write(client_fd, response_header, strlen(response_header));
     write(client_fd, response_body, strlen(response_body));
 
     // クライアントのソケットを閉じる
+    printf("Close client socket\n");
     close(client_fd);
   }
 
   // サーバのソケットを閉じる
+  printf("Close server socket\n");
   close(server_fd);
 
   return 0;
